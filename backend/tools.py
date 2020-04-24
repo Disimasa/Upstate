@@ -16,5 +16,5 @@ def generate_user(data: str):
 def generate_team(manger):
     data = manger.name + manger.surname
     private_token, public_token = generate_tokens(data)
-    return {'manager_id': manger.pk, 'members_token': public_token,
-            'managers_token': private_token, 'name': 'Какая-то команда'}
+    return {'manager_id': manger.pk, 'public_token': public_token,
+            'private_token': private_token, 'name': 'Какая-то команда'}

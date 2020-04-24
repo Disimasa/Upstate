@@ -35,7 +35,7 @@ class Manager(User):
 class Team(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=64)
-    members_token = fields.CharField(max_length=256)
-    managers_token = fields.CharField(max_length=256)
+    public_token = fields.CharField(max_length=256)
+    private_token = fields.CharField(max_length=256)
     managers = fields.relational.ManyToManyField('models.User')
     members = fields.relational.ManyToManyField('models.Manager')

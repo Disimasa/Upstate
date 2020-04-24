@@ -5,7 +5,12 @@ from models import Team, User
 
 
 class TeamToCreate(BaseModel):
-    creator_token: str = Field(..., description='Token of user, who creates the team', example='fh14kl1km!6b')
+    creator_token: str = Field(..., description='Private token of user, who creates the team', example='fh14kl1km!6b')
+
+
+class UserToJoin(BaseModel):
+    team_token: str = Field(..., description='The public token of team', example='fh14kl1km!6b')
+    user_token: str = Field(..., description='The private token of user', example='fh14kl1km!6b')
 
 
 class UserToCreate(BaseModel):
@@ -16,3 +21,5 @@ class UserToCreate(BaseModel):
 
 User_pydantic = pydantic_model_creator(User, name='User')
 Team_pydantic = pydantic_model_creator(Team, name='Team')
+Public_User_pydantic = pydantic_model_creator(User, name='User', exclude=('private_token',))
+Public_Team_pydantic = pydantic_model_creator(Team, name='Team', exclude=('managers_token', 'managers'))
