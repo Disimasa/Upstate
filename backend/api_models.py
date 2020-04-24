@@ -15,3 +15,4 @@ class UserToCreate(BaseModel):
 
 
 User_pydantic = pydantic_model_creator(User, name='User')
+Team_pydantic = pydantic_model_creator(Team, name='Team')
