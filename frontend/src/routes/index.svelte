@@ -32,10 +32,15 @@
 	}
 </style>
 
+
+<script>
+	import Bar from './_bar-part.svelte'
+</script>
+
 <svelte:head>
 	<title>Sapper project template</title>
 </svelte:head>
-
+<Bar width="20%" color="green" title="Hello it`s me!"/>
 <h1>Great success!</h1>
 
 <figure>
