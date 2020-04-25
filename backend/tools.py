@@ -1,20 +1,35 @@
 from models import User, Manager
+from api_models import UserToCreate
+import pandas as pd
+from hashlib import sha256
+from typing import List
+import datetime
 
 
-def generate_tokens(data: str):
-    # if data['sketch'] == 'team':
-    #     return '12414121519809@1'
-    return '124142512', '51qwrq412'
+def generate_tokens_onetime(data: List[str]):
+    data = ':'.join(data)
+    data += datetime.datetime.now().strftime('%d%B%Y')
+    private, public = bytes(data + 'gWekqpoie12', encoding='utf8'), bytes(data, encoding='utf8')
+    return 'private:'+sha256(private).hexdigest(), 'public:'+sha256(public).hexdigest()
 
 
-def generate_user(data: str):
-    private_token, public_token = generate_tokens(data)
-    return {'name': 'Иван', 'surname': 'Иванов', 'profession': 'Developer',
+def generate_user(user_data: UserToCreate, gen_data: pd.DataFrame):
+    random_person = gen_data.sample(1)
+    random_person = random_person.iloc[0]
+    if user_data.name == '' and user_data.surname == '':
+        name = random_person['name']
+        surname = random_person['surname']
+        profession = random_person['profession']
+    else:
+        name = user_data.name
+        surname = user_data.surname
+        profession = ''
+    private_token, public_token = generate_tokens_onetime([profession, name, surname])
+    return {'name': name, 'surname': surname, 'profession': profession,
             'private_token': private_token, 'public_token': public_token}
 
 
 def generate_team(manger):
-    data = manger.name + manger.surname
-    private_token, public_token = generate_tokens(data)
+    private_token, public_token = generate_tokens_onetime([manger.name, manger.surname])
     return {'manager_id': manger.pk, 'public_token': public_token,
             'private_token': private_token, 'name': 'Какая-то команда'}

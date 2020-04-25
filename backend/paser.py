@@ -21,14 +21,38 @@ surnames = list()
 professions = list()
 for i in range(len(parsed_names)):
     name, *surname = parsed_names[i].split()
+    if len(surname) > 0:
+        if 'I' in surname[0] or 'X' in surname[0] or 'V' in surname[0]:
+            name += ' ' + surname[0]
+            if len(surname) > 1:
+                surname = surname[1:]
+            else:
+                surname = ''
     surname = ' '.join(surname)
     profession = parsed_professions[i]
+
     if len(profession) > 64:
-        profession = profession[:62] + '...'
+        profession = profession[:61].strip() + '...'
 
     if len(name) > 64:
-        name = name[:62] + '...'
+        name = name[:61].strip() + '...'
 
     if len(surname) > 64:
-        surname = surname[:62] + '...'
+        surname = surname[:61].strip() + '...'
 
+    name = name.strip('\n').strip(',')
+    surname = surname.strip('\n')
+    try:
+        profession = profession.strip('\n')
+    except:
+        continue
+
+    names.append(name)
+    surnames.append(surname)
+    professions.append(profession)
+
+names = pd.Series(names, name='name')
+surnames = pd.Series(surnames, name='surname')
+professions = pd.Series(professions, name='profession')
+res = pd.concat([names, surnames, professions], axis=1)
+res.to_csv('persons.csv', index=False)

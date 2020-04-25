@@ -7,6 +7,8 @@ from api_models import UserToCreate, TeamToCreate, User_pydantic, \
 from tortoise import Tortoise
 import tools
 import fill_db
+import pandas as pd
+
 
 app = FastAPI(
     title='Upstate API',
@@ -25,6 +27,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+data_for_persons_generator = None
+
 
 @app.on_event('startup')
 async def startup():
@@ -34,6 +38,8 @@ async def startup():
     )
     await Tortoise.generate_schemas(safe=True)
     await fill_db.statuses()
+    global data_for_persons_generator
+    data_for_persons_generator = pd.read_csv('persons.csv').fillna('')
 
 
 @app.on_event('shutdown')
@@ -54,13 +60,15 @@ async def team_view(public_token: str = Query(..., description='Public token of 
     team = await Team.get_or_none(public_token=public_token)
     if team is None:
         raise HTTPException(status_code=404, detail='Team not found')
-    return await Public_Team_pydantic.from_tortoise_orm(team)
+    return {
+        'team': await Public_Team_pydantic.from_tortoise_orm(team),
+        'members': [await Public_User_pydantic.from_tortoise_orm(user) for user in await team.members.all()]
+    }
 
 
 @app.post('/create/user', description='Creates user if it was not in DB. Returns full User with private_token')
 async def create_user(user_data: UserToCreate):
-    user = await User.get_or_create(defaults=tools.generate_user(user_data))
-    user = user[0]  # get_or_create returns tuple
+    user = await User.create(**tools.generate_user(user_data, data_for_persons_generator))
     return await User_pydantic.from_tortoise_orm(user)
 
 
@@ -70,18 +78,12 @@ async def create_team(team_data: TeamToCreate):
     user = await User.get_or_none(private_token=user_token)
     if user is None:
         raise HTTPException(status_code=404, detail='User not found')
-    manager = await Manager.get_or_create(defaults=tools.generate_user(user_token))
+    manager = await Manager.get_or_create(defaults=tools.generate_user(user, data_for_persons_generator))
     manager = manager[0]
     team = await Team.create(**tools.generate_team(manager))
     return await Team_pydantic.from_tortoise_orm(team)
 
 
-# new_name: str
-# new_surname: s
-# new_profession
-# new_status: st
-# new_saved_stat
-# private_token:
 @app.post('/edit/user', description='Edit User info')
 async def edit_user(user_data: UserToEdit):
     user = User.get_or_none(private_token=user_data.private_token)
@@ -119,6 +121,17 @@ async def join_team(is_manager: bool = False, data: UserToJoin = Body(...)):
             raise HTTPException(status_code=404, detail='User or team not found')
         await team.members.add(user)
 
+
+@app.post('/admin/show')
+async def admin_view():
+    return {
+        'Users': [await User_pydantic.from_tortoise_orm(user) for user in await User.all()],
+        'Teams': [{
+            'team': await Team_pydantic.from_tortoise_orm(team),
+            'members': [await User_pydantic.from_tortoise_orm(member) for member in await team.members.all()],
+            'managers': [await User_pydantic.from_tortoise_orm(manager) for manager in await team.managers.all()]
+        } for team in await Team.all()]
+    }
 
 if __name__ == '__main__':
     uvicorn.run('app:app', reload=True, use_colors=True)
