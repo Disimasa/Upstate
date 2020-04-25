@@ -3,11 +3,10 @@ from fastapi import FastAPI, Body, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from models import User, Team, Status, Manager
 from api_models import UserToCreate, TeamToCreate, User_pydantic, \
-    Team_pydantic, UserToJoin, Public_User_pydantic, Public_Team_pydantic
+     Team_pydantic, UserToJoin, UserToEdit, Public_User_pydantic, Public_Team_pydantic
 from tortoise import Tortoise
 import tools
-
-INITIAL_STATUSES = ['Чилю', 'Ботаю', 'Играю']
+import fill_db
 
 app = FastAPI(
     title='Upstate API',
@@ -34,9 +33,7 @@ async def startup():
         modules={'models': ['models']}
     )
     await Tortoise.generate_schemas(safe=True)
-    for status in INITIAL_STATUSES:
-        if Status.get_or_none(status=status) is None:
-            await Status.create(status=status)
+    await fill_db.statuses()
 
 
 @app.on_event('shutdown')
@@ -77,6 +74,31 @@ async def create_team(team_data: TeamToCreate):
     manager = manager[0]
     team = await Team.create(**tools.generate_team(manager))
     return await Team_pydantic.from_tortoise_orm(team)
+
+
+# new_name: str
+# new_surname: s
+# new_profession
+# new_status: st
+# new_saved_stat
+# private_token:
+@app.post('/edit/user', description='Edit User info')
+async def edit_user(user_data: UserToEdit):
+    user = User.get_or_none(private_token=user_data.private_token)
+    if user is None:
+        raise HTTPException(status_code=404, detail='User not found')
+    if user_data.new_name is not None:
+        user.name = user_data.new_name
+    if user_data.new_surname is not None:
+        user.surname = user_data.new_surname
+    if user_data.new_profession is not None:
+        user.profession = user_data.new_profession
+    if user_data.new_status is not None:
+        user.status = user_data.new_status
+    if user_data.new_saved_statuses is not None:
+        for status_title in user_data.new_saved_statuses:
+            status = await Status.get_or_create(title=status_title)
+            status.users.add(user)
 
 
 @app.post('/enter/team',

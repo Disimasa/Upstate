@@ -18,7 +18,7 @@ class User(Model):
 class Status(Model):
     id = fields.IntField(pk=True)
     title = fields.CharField(max_length=32)
-    saved_statuses = fields.relational.ForeignKeyField('models.User')
+    saved_statuses = fields.relational.ManyToManyField('models.User')
 
 
 class Task(Model):
