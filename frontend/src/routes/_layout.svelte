@@ -16,5 +16,4 @@
 <!--</style>-->
 
 <Nav {segment}/>
-
 <slot></slot>
