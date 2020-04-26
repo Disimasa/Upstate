@@ -78,7 +78,7 @@ async def team_view(public_token: str = Query(..., description='Public token of 
 
 @app.post('/show/user/private', description='Shows private User view', response_model=ShowPrivateUser)
 async def user_view(private_token: PrivateToken):
-    user = await User.get_or_none(private_token=private_token)
+    user = await User.get_or_none(private_token=private_token.private_token)
     if user is None:
         raise HTTPException(status_code=404, detail='User not found')
     return {
