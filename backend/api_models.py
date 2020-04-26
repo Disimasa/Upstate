@@ -67,6 +67,10 @@ class ShowPublicTeam(BaseModel):
     team: Public_Team_pydantic
 
 
+class PrivateToken(BaseModel):
+    private_token: str = Field(..., description='Set private token', example='rqauifm138dkl1!4')
+
+
 class ShowPrivateUser(BaseModel):
     user: User_pydantic
     saved_statuses: List[Status_pydantic]
