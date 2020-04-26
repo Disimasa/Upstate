@@ -1,9 +1,9 @@
 <style>
     section {
         width: 100vw;
-        height: 46vh;
         background-color: #f8f8f8;
         display: flex;
+        height: 70vh;
         /*align-items: center;*/
         justify-content: center;
     }
@@ -11,25 +11,34 @@
     .flex-container {
         display: flex;
         flex-direction: row;
+        align-items: center;
+        margin-top: -4vw;
     }
+
     .section-container {
         width: 80vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
     }
     h1 {
-        max-width: 800px;
+        margin-left: 30vw;
         font-family: Comfortaa, sans-serif;
-        font-size: 2.4em;
+        font-size: 3em;
         color: #6C6C6C;
+        /*width: 90vw;*/
+        text-align: right;
+        max-width: 700px;
     }
     .question {
         margin-top: 2vh;
-        font-size: 1.8em;
+        font-size: 2em;
         font-family: Comfortaa, sans-serif;
         color: #757575;
     }
     .fix {
-        margin-top: 5vmin;
-        font-size: 2em;
+        margin-top: 3vh;
+        font-size: 2.2em;
         font-family: Comfortaa, sans-serif;
         color: #4B4B4B;
         font-weight: bold;
@@ -46,13 +55,13 @@
 </style>
 <section>
     <div class="section-container">
-        <h1>Сделайте общение с командой простым и эффективным</h1>
+        <h1>Узнайте, кто чем занят в любое время</h1>
         <div class="flex-container">
+            <div class="image"><img src="landing/computer.png"></div>
             <div class="text">
-                <h2 class="question">Современные средства не дают раскрыть весь потенциал асинхронного общения?</h2>
-                <h2 class="fix">Мы здесь, чтобы это исправить!</h2>
+                <h2 class="question">Вспомните момент, когда вы ждали ответа на протяжени минут, а может и часов</h2>
+                <h2 class="fix">Пора скзать этому Нет</h2>
             </div>
-            <div class="image"><img src="landing/trees.png"></div>
         </div>
     </div>
 </section>
