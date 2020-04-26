@@ -1,51 +1,33 @@
-<style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
-	}
-
-	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
-	}
-
-	figure {
-		margin: 0 0 1em 0;
-	}
-
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
-	}
-
-	p {
-		margin: 1em auto;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
-	}
-</style>
-
-
 <script>
-	import Bar from './_bar-part.svelte'
+    import {url} from '../../static/site_url.js';
+async function Create_team() {
+let cookie_public = get_cookie('public_token');
+if (cookie_public === null) {
+    const resp = await fetch(url + 'create/user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({'platform_id': document.documentElement.clientWidth+' '+document.documentElement.clientHeight,
+        'platform_name':'web', 'name':'', 'surname':''})
+    });
+    const json = await resp.json();
+    alert(json['user']['name']);
+}
+}
+function get_cookie(cookie_name)
+{
+  let results = document.cookie.match('(^|;) ?' + cookie_name + '=([^;]*)(;|$)');
+
+  if (results)
+    return (unescape(results[2]));
+  else
+    return null;
+}
 </script>
-
-<svelte:head>
-	<title>Sapper project template</title>
-</svelte:head>
-<Bar width="20%" color="green" title="Hello it`s me!"/>
-<h1>Great success!</h1>
-
-<figure>
-	<img alt='Borat' src='great-success.png'>
-	<figcaption>HIGH FIVE!</figcaption>
-</figure>
-
-<p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>
+<style>
+.create_team {
+    margin-top: 200px;
+}
+</style>
+<button class="create_team" on:click={Create_team}>Создать команду</button>

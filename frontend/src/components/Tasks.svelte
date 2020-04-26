@@ -30,15 +30,17 @@ let tasks =  [
 		}
 	});
 function add(input) {
-		const todo = {
-			id: uid++,
-			done: false,
-			description: input.value
-		};
+    if (input.value !== '') {
+        const todo = {
+            id: uid++,
+            done: false,
+            description: input.value
+        };
 
-		tasks = [todo, ...tasks];
-		input.value = '';
-	}
+        tasks = [...tasks, todo];
+        input.value = '';
+    }
+}
 
 	function remove(todo) {
 		tasks = tasks.filter(t => t !== todo);
@@ -51,6 +53,9 @@ function add(input) {
 	}
 </script>
 <style>
+    input::-moz-placeholder {
+    color: #6574FF;}
+input::-webkit-input-placeholder { color: #6574FF;}
 .component {
         width: 100%;
         display: flex;
@@ -58,47 +63,9 @@ function add(input) {
         align-items: center;
         background-color: #E5E5E5;
         margin-bottom: 200px;
-    }
-@media all and (max-width: 780px) {
-
-}
-@media all and (min-width: 780px) {
-    .board {
-        width: 95%;
-        max-width: 1300px;
-        background-color: #FBFBFB;
-        box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.07);
-        border-radius: 28px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
         font-family: 'Comfortaa', cursive;
-        font-size: 20px;
     }
-
-    .tasks, .performed {
-    }
-
-    .tasks {
-
-    }
-
-    .tasks p, .performed p {
-        margin: 30px 0 40px 30px;
-    }
-
-    .performed {
-
-    }
-
-    .task_block {
-        padding: 10px 20px;
-        border-radius: 30px;
-        margin: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.09);
-        text-align: center;
-    }
-
-    .task_block:hover {
+.task_block:hover {
         cursor: pointer;
         background-color: #E5E5E5;
     }
@@ -111,19 +78,86 @@ function add(input) {
         display: inline-block;
         border-bottom: 2px solid #939DFF;
     }
+    .performed_text {
+        border-bottom: 2px solid #2FFF9B;
+    }
+    .input_task_block {
+    font-family: Comfortaa, cursive;
+    padding: 10px 20px;
+    margin: 20px;
+    width: inherit;
+    border:0;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.09);
+    outline: none;
+}
+@media all and (max-width: 780px) {
+    .component {
+        background-color: #FFFFFF;
+    }
+.board {
+    width: 93%;
+    margin: 10px 0 0 0;
+    background-color: #FFFFFF;
+}
+.tasks {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.tasks p, .performed p {
+    font-size: 8vw;
+    color: #4B4B4B;
+    text-align: center;
+}
+.task_text p, .performed_text p {
+    font-size: 4vw;
+    margin:0 0 5px 0;
+}
+.task_block {
+        padding: 5px 20px;
+        border-radius: 30px;
+        margin: 15px 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.09);
+        text-align: center;
+    }
+.input_task_block {
+    text-align: center;
+    width: 60%;
+    font-size: 20px;
+}
+}
+@media all and (min-width: 780px) {
+    .board {
+        width: 95%;
+        max-width: 1300px;
+        background-color: #FBFBFB;
+        box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.07);
+        border-radius: 28px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        font-size: 20px;
+    }
+    .tasks p, .performed p {
+        margin: 30px 0 40px 30px;
+    }
 
     .task_text p, .performed_text p {
         padding-bottom: 2px;
         margin: 0;
     }
-
-    .performed_text {
-        border-bottom: 2px solid #2FFF9B;
+.task_block {
+        padding: 10px 20px;
+        border-radius: 30px;
+        margin: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.09);
+        text-align: center;
     }
 }
 </style>
-<div class="component">
-<div class="board" out:fade="{{duration: 500}}">
+<div class="component" transition:fade="{{duration: 300}}">
+<div class="board">
     <div class="tasks">
 <p>Рабочие задачи</p>
         {#each tasks.filter(t => !t.done) as todo (todo.id)}
@@ -133,9 +167,10 @@ function add(input) {
             <div class="task_text"><p>{todo.description}</p></div>
         </div>
 		{/each}
+    <input class="input_task_block" placeholder="Добавить задачу" on:keydown={e => e.which === 13 && add(e.target)}>
     </div>
     <div class="performed">
-        <p>Завершенные задачи</p>
+        <p>Принятые задачи</p>
         {#each tasks.filter(t => t.done) as todo (todo.id)}
         <div class="task_block" on:click={() => mark(todo, false)} in:receive="{{key: todo.id}}"
 				out:send="{{key: todo.id}}"

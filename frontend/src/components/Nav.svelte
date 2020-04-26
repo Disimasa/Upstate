@@ -15,6 +15,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;500&display=swap" rel="stylesheet">
 
 <style>
+	a {
+		text-decoration: none;
+	}
 @media all and (max-width: 780px) {
 	.header {
 		position:absolute;

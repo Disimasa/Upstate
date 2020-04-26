@@ -45,7 +45,7 @@ Sapper expects to find two directories in the root of your project —  `src` an
 
 ### src
 
-The [src](src) directory contains the entry points for your app — `client.js`, `server.js` and (optionally) a `service-worker.js` — along with a `template.html` file and a `routes` directory.
+The [src](src) directory contains the entry points for your app — `client.js`, `site_url.js` and (optionally) a `service-worker.js` — along with a `template.html` file and a `routes` directory.
 
 
 #### src/routes

@@ -3,8 +3,19 @@ import { fly, fade } from 'svelte/transition';
 let direction = -1;
 let change = 0;
 let slide = 0;
-let current_status = 'Ботаю';
+export let current_status;
+export let name;
+export let surname;
+export let job;
 let statuses = ['Ботаю', 'Чилю', 'Сплю', 'Играю', 'Отошел', 'qwe','sdd2', 'dsdsd', '1dsds','dsds', 'sad', 'sdd'];
+
+
+function add(input) {
+    if (input.value !== '') {
+        statuses = [input.value, ...statuses];
+        input.value = '';
+    }
+}
 function next_slide() {
     if (statuses.length > 5) {
         slide++;
@@ -38,6 +49,9 @@ function previous_slide() {
 }
 </script>
 <style>
+    input::-moz-placeholder {
+    color: #6574FF; }
+input::-webkit-input-placeholder { color: #6574FF; }
 .picture {
         grid-area: picture;
         display: flex;
@@ -112,6 +126,7 @@ function previous_slide() {
     justify-content: center;
     align-items: center;
     font-family: 'Comfortaa', cursive;
+    outline: none;
 }
 .button_right {
     grid-area: button_right;
@@ -136,12 +151,26 @@ function previous_slide() {
     width: 20px;
     height: 30px;
 }
+.input_new_status {
+        font-family: 'Comfortaa', cursive;
+        font-style: normal;
+        font-weight: normal;
+        color: #6574FF;
+        outline: none;
+        border: 0;
+        border-bottom: 2px solid #939DFF;
+        width: 200px;
+        background-color: #FBFBFB;
+        margin: 0 50px;
+    }
+.button_status:hover {
+    cursor: pointer;
+}
+.current_button {
+    color: #6574FF;
+}
 @media all and (max-width: 780px) {
     .component {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 2000px;
         width: 100%;
         background-color: #FFFFFF;
         z-index: 0;
@@ -152,7 +181,7 @@ function previous_slide() {
         width: 93%;
         background: #FFFFFF;
         border-radius: 30px;
-        margin: 50px 0 0 15px;
+        margin: 50px 0 10px 15px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.09);
         display: grid;
         grid-template-rows: repeat(4, auto);
@@ -194,7 +223,7 @@ function previous_slide() {
         font-size: 6vw;
         text-align: center;
     }
-     .input_new_status {
+     .desktop_input {
      display: none;
      }
      .status_row_1, .status_row_2 {
@@ -209,13 +238,24 @@ function previous_slide() {
             ". button_left status_row_1 button_right ."
     ". button_left status_row_2 button_right .";
 }
+.input_block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0 20px 0;
+}
+.input_new_status {
+    font-size: 3.4vw;
+    width: 53%;
+    background: #FFFFFF;
+}
 }
 @media all and (min-width: 1100px) {
      .input_new_status {
      font-size: 16px;
      }
 }
-@media all and (max-width: 1100px) {
+@media all and (max-width: 1100px) and (min-width: 780px) {
      .input_new_status {
      font-size: 1.5vw;
      }
@@ -261,21 +301,10 @@ function previous_slide() {
         margin: 0 0 0 32px;
     }
 
-    .input_new_status {
-        font-family: 'Comfortaa', cursive;
-        font-style: normal;
-        font-weight: normal;
-        color: #6574FF;
-        outline: none;
-        border: 0;
-        border-bottom: 2px solid #939DFF;
-        width: 200px;
-        background-color: #FBFBFB;
-        margin: 0 50px;
+
+    .mobile_input {
+        display: none;
     }
-input::-moz-placeholder {
-    color: #6574FF; }
-input::-webkit-input-placeholder { color: #6574FF; }
 ul p {
     margin: 10px 0 5px 0;
 }
@@ -303,24 +332,21 @@ ul p {
     align-items: center;
     font-family: 'Comfortaa', cursive;
 }
-.button_status:hover {
-    cursor: pointer;
-}
-.current_button {
-    color: #6574FF;
+.input_block {
+    display: none;
 }
 }
 </style>
-<div class="component">
-<div class="card" out:fade="{{duration: 500}}">
+<div class="component" transition:fade="{{duration: 300}}">
+<div class="card" >
 <div class="picture"><div class="circle"></div></div>
     <div class="current_status"><p class="new_line">Текущий<br/> статус: </p><p class="all_line">Текущий статус:</p><p class="status">{current_status}</p></div>
-<div class="new_status"><p>Выбери новый статус</p><input type="text" placeholder="Добавь свой" class="input_new_status"></div>
+<div class="new_status"><p>Выбери новый статус</p><input placeholder="Добавь свой" class="input_new_status desktop_input" on:keydown={e => e.which === 13 && add(e.target)}></div>
 <div class="info">
     <ul>
-    <li><div class="name"><p>Иван</p></div></li>
-    <li><div class="name"><p>Иванов</p></div></li>
-    <li><div class="job"><p>Разработчик</p></div></li>
+    <li><div class="name"><p>{name}</p></div></li>
+    <li><div class="name"><p>{surname}</p></div></li>
+    <li><div class="job"><p>{job}</p></div></li>
     </ul>
 </div>
 <div class="statuses">
@@ -358,5 +384,6 @@ ul p {
         {/if}
     <div class="button_right"><div class="arrow" on:click={next_slide}><img class="arrow_image" src="/Right.png" alt=""> </div></div>
 </div>
+    <div class="input_block"><input placeholder="Добавь свой" class="input_new_status mobile_input" on:keydown={e => e.which === 13 && add(e.target)}></div>
 </div>
 </div>
