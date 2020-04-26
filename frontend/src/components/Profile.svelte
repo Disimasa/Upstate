@@ -271,7 +271,6 @@ input::-webkit-input-placeholder { color: #6574FF; }
     }
 
     .card {
-        height: 400px;
         width: 95%;
         max-width: 1300px;
         background-color: #FBFBFB;

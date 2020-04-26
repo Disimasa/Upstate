@@ -4,14 +4,7 @@ import { crossfade } from 'svelte/transition';
 import { flip } from 'svelte/animate';
 import { fade } from 'svelte/transition';
 let uid = 1;
-let tasks =  [
-		{ id: uid++, done: false, description: 'написать что-нибудь в документацию' },
-		{ id: uid++, done: false, description: 'начать писать статью в блог' },
-		{ id: uid++, done: true, description: 'купить молока' },
-		{ id: uid++, done: false, description: 'покосить газон' },
-		{ id: uid++, done: false, description: 'покормить черепашку' },
-		{ id: uid++, done: false, description: 'пофиксить пару багов' },
-	];
+export let tasks;
 	const [send, receive] = crossfade({
 		duration: d => Math.sqrt(d * 200),
 
@@ -33,7 +26,7 @@ function add(input) {
     if (input.value !== '') {
         const todo = {
             id: uid++,
-            done: false,
+            completed: false,
             description: input.value
         };
 
@@ -47,7 +40,7 @@ function add(input) {
 	}
 
 	function mark(todo, done) {
-		todo.done = done;
+		todo.completed = done;
 		remove(todo);
 		tasks = tasks.concat(todo);
 	}
@@ -160,7 +153,7 @@ input::-webkit-input-placeholder { color: #6574FF;}
 <div class="board">
     <div class="tasks">
 <p>Рабочие задачи</p>
-        {#each tasks.filter(t => !t.done) as todo (todo.id)}
+        {#each tasks.filter(t => !t.completed) as todo (todo.id)}
         <div class="task_block" on:click={() => mark(todo, true)} in:receive="{{key: todo.id}}"
 				out:send="{{key: todo.id}}"
 				animate:flip>
@@ -171,7 +164,7 @@ input::-webkit-input-placeholder { color: #6574FF;}
     </div>
     <div class="performed">
         <p>Принятые задачи</p>
-        {#each tasks.filter(t => t.done) as todo (todo.id)}
+        {#each tasks.filter(t => t.completed) as todo (todo.id)}
         <div class="task_block" on:click={() => mark(todo, false)} in:receive="{{key: todo.id}}"
 				out:send="{{key: todo.id}}"
 				animate:flip="{{duration: 200}}">

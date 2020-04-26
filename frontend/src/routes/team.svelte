@@ -1,19 +1,21 @@
-<script context="module">
-    import {url} from '../../static/site_url.js';
-    export async function preload({ params, query }) {
-        const resp = await this.fetch(url + 'show/team?' + new URLSearchParams({public_token: 'public:83b4ee72648ecc76fc981b90d2d478980b8567ffa91836ab4447bf50365df068'}));
-        const json = await resp.json();
-        return {json};
-    }
-</script>
 <script>
 import { fade, slide } from 'svelte/transition';
-export let json;
-let team = json['team']['name'];
-    let members = [['Иван', 'Иванов', 'Разработчик', 'Ботаю', 'Покушать', 'Поботать', 'Сдать лабу', 'Покормить кота'],['Петр', 'Петров', 'Дизайнер', 'Чилю', 'Лечь спать'], ['Анна', 'Аановна', 'Аналитик', 'Сплю', 'Проснуться']];
-for (let i = 0; i < json['members'].length; i++) {
-json['members'][i]['bool'] = '0';
-}
+import { onMount } from 'svelte';
+import {url} from '../../static/site_url.js';
+let team;
+onMount(fetch_data);
+async function fetch_data() {
+        let token = localStorage.getItem('team_token');
+        alert(token);
+        const resp = await fetch(url + 'show/team?' + new URLSearchParams({'public_token': token}));
+        const json = await resp.json();
+        team = json['team']['name'];
+        for (let i = 0; i < json['members'].length; i++) {
+        json['members'][i]['bool'] = '0';
+        }
+        return json;
+    }
+    let json = fetch_data();
 function drop(num) {
     if (json['members'][num]['bool'] === '0') {
         json['members'][num]['bool'] = '1';
@@ -248,6 +250,8 @@ function drop(num) {
 }
 }
 </style>
+{#await fetch_data()}
+    {:then json}
 <div class="component" transition:fade="{{duration: 300}}">
     <div class="team">
         {#each json['members'] as member, num}
@@ -275,3 +279,4 @@ function drop(num) {
             {/each}
     </div>
 </div>
+{/await}

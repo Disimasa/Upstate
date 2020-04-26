@@ -3,7 +3,7 @@
     let public_token;
     let private_token;
 async function Create_team() {
-    public_token = get_cookie('public_token');
+    public_token = localStorage.getItem('public_token');
     alert(public_token);
 if (public_token === null) {
     const resp = await fetch(url + 'create/user', {
@@ -15,13 +15,12 @@ if (public_token === null) {
         'platform_name':'web', 'name':'', 'surname':''})
     });
     const json = await resp.json();
-    alert(json['user']['name'])
     public_token = json['user']['public_token'];
     private_token = json['user']['private_token'];
-    document.cookie = "public_token=" + escape(public_token) + "; expires=22/22/2022 00:00:00";
-    document.cookie = "private_token=" + escape(private_token) + "; expires=22/22/2022 00:00:00";
+    localStorage.setItem('public_token', public_token);
+    localStorage.setItem('private_token', private_token);
 } else {
-    private_token = get_cookie('cookie_private');
+    private_token = localStorage.getItem('private_token');
 }
     const resp = await fetch(url + 'create/team', {
         method: 'POST',
@@ -31,16 +30,8 @@ if (public_token === null) {
         body: JSON.stringify({'creator_token':private_token})
     });
     const json = await resp.json();
-    alert(json['name']);
-}
-function get_cookie(cookie_name)
-{
-  let results = document.cookie.match('(^|;) ?' + cookie_name + '=([^;]*)(;|$)');
-
-  if (results)
-    return (unescape(results[2]));
-  else
-    return null;
+    alert(json['public_token']);
+    localStorage.setItem('team_token', json['public_token'])
 }
 </script>
 <style>
