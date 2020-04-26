@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "bodymovin": "^4.13.0",
+    "degit": "^2.8.0",
+    "lottie-web": "^5.6.6"
+  }
+}

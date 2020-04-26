@@ -36,7 +36,7 @@ class User(Model):
 
     teams: fields.ManyToManyRelation[Team]
     saved_statuses: fields.ManyToManyRelation[Status]
-    tasks: fields.ReverseRelation['Task']
+    tasks: fields.ManyToManyRelation['Task']
 
     def __str__(self):
         return f'Name: {self.name}, Surname: {self.surname}'
@@ -50,4 +50,4 @@ class Task(Model):
     id = fields.IntField(pk=True)
     description = fields.CharField(max_length=128)
     completed = fields.BooleanField()
-    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField('models.User', related_name='tasks')
+    user: fields.ManyToManyRelation[User] = fields.ManyToManyField('models.User', related_name='tasks')

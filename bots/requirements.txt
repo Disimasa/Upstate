@@ -1,0 +1,6 @@
+requests
+httpx
+starlette
+uvicorn
+tortoise-orm
+aiofiles
