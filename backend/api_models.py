@@ -1,7 +1,7 @@
 from tortoise.contrib.pydantic import pydantic_model_creator
 from pydantic import BaseModel, Field
 from typing import List, Union
-from models import Team, User, Manager, Status
+from models import Team, User, Manager, Status, Task
 from enum import Enum
 
 
@@ -24,6 +24,11 @@ class UserToJoin(BaseModel):
                             example='fh14kl1km!6b', max_length=256)
 
 
+class TaskToGet(BaseModel):
+    completed: bool
+    description: str
+
+
 class UserToEdit(BaseModel):
     private_token: str = Field(..., description='Private token of User', max_length=256)
     new_name: str = Field(None, description='Set a new name if it was changed', max_length=64)
@@ -31,6 +36,7 @@ class UserToEdit(BaseModel):
     new_profession: str = Field(None, description='Set a new profession if it was changed', max_length=64)
     new_status: str = Field(None, description='Set a new status if it was changed', max_length=32)
     new_saved_statuses: List[str] = Field(None, description='Set new list with titles of statuses')
+    new_tasks: List[TaskToGet] = Field(None, description='Set a new list of tasks')
 
 
 class UserToCreate(BaseModel):
@@ -48,6 +54,7 @@ Public_User_pydantic = pydantic_model_creator(User, name='UserPublic',
                                               exclude=('private_token', 'vk_id', 'alice_id', 'telegram_id', 'web_id'))
 Public_Team_pydantic = pydantic_model_creator(Team, name='TeamPublic',
                                               exclude=('managers_token', 'managers', 'private_token'))
+Task_pydantic = pydantic_model_creator(Task, name='Task')
 
 
 class ShowPublicTeam(BaseModel):
@@ -57,9 +64,10 @@ class ShowPublicTeam(BaseModel):
 
 class ShowPublicUser(BaseModel):
     user: Public_User_pydantic
-    # tasks
+    tasks: List[Task_pydantic]
 
 
 class ShowPrivateUser(BaseModel):
     user: User_pydantic
     saved_statuses: List[Status_pydantic]
+    tasks: List[Task_pydantic]

@@ -20,13 +20,6 @@ class Status(Model):
         return f'Status: {self.title}'
 
 
-class Task(Model):
-    id = fields.IntField(pk=True)
-    description = fields.CharField(max_length=128)
-    completed = fields.BooleanField()
-    # user = fields.Fo('models.User')
-
-
 class User(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=64)
@@ -43,6 +36,7 @@ class User(Model):
 
     teams: fields.ManyToManyRelation[Team]
     saved_statuses: fields.ManyToManyRelation[Status]
+    tasks: fields.ReverseRelation['Task']
 
     def __str__(self):
         return f'Name: {self.name}, Surname: {self.surname}'
@@ -51,3 +45,9 @@ class User(Model):
 class Manager(User):
     id = fields.UUIDField(pk=True)
 
+
+class Task(Model):
+    id = fields.IntField(pk=True)
+    description = fields.CharField(max_length=128)
+    completed = fields.BooleanField()
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField('models.User', related_name='tasks')
