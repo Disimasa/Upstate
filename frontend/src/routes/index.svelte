@@ -1,8 +1,11 @@
 <script>
     import {url} from '../../static/site_url.js';
+    let public_token;
+    let private_token;
 async function Create_team() {
-let cookie_public = get_cookie('public_token');
-if (cookie_public === null) {
+    public_token = get_cookie('public_token');
+    alert(public_token);
+if (public_token === null) {
     const resp = await fetch(url + 'create/user', {
         method: 'POST',
         headers: {
@@ -12,8 +15,23 @@ if (cookie_public === null) {
         'platform_name':'web', 'name':'', 'surname':''})
     });
     const json = await resp.json();
-    alert(json['user']['name']);
+    alert(json['user']['name'])
+    public_token = json['user']['public_token'];
+    private_token = json['user']['private_token'];
+    document.cookie = "public_token=" + escape(public_token) + "; expires=22/22/2022 00:00:00";
+    document.cookie = "private_token=" + escape(private_token) + "; expires=22/22/2022 00:00:00";
+} else {
+    private_token = get_cookie('cookie_private');
 }
+    const resp = await fetch(url + 'create/team', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({'creator_token':private_token})
+    });
+    const json = await resp.json();
+    alert(json['name']);
 }
 function get_cookie(cookie_name)
 {
