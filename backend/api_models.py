@@ -73,5 +73,5 @@ class PrivateToken(BaseModel):
 
 class ShowPrivateUser(BaseModel):
     user: User_pydantic
-    saved_statuses: List[Status_pydantic]
+    saved_statuses: List[str]
     tasks: List[Task_pydantic]
