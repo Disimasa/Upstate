@@ -113,7 +113,7 @@ input::-webkit-input-placeholder { color: #6574FF;}
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+
 }
 .tasks p, .performed p {
     font-size: 8vw;
@@ -135,6 +135,7 @@ input::-webkit-input-placeholder { color: #6574FF;}
     text-align: center;
     width: 60%;
     font-size: 20px;
+    margin: auto;
 }
 }
 @media all and (min-width: 780px) {
