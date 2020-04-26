@@ -24,7 +24,7 @@ class Task(Model):
     id = fields.IntField(pk=True)
     description = fields.CharField(max_length=128)
     completed = fields.BooleanField()
-    user = fields.relational.ForeignKeyField('models.User')
+    # user = fields.Fo('models.User')
 
 
 class User(Model):
