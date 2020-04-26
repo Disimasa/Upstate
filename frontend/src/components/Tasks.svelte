@@ -4,6 +4,10 @@ import { crossfade } from 'svelte/transition';
 import { flip } from 'svelte/animate';
 import { fade } from 'svelte/transition';
 let uid = 1;
+export let name;
+export let surname;
+export let job;
+export let statuses;
 export let tasks;
 	const [send, receive] = crossfade({
 		duration: d => Math.sqrt(d * 200),

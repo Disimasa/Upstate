@@ -1,5 +1,7 @@
 <script>
 import { fly, fade } from 'svelte/transition';
+import {url} from '../../static/site_url.js';
+export let tasks;
 let direction = -1;
 let change = 0;
 let slide = 0;
@@ -7,13 +9,27 @@ export let current_status;
 export let name;
 export let surname;
 export let job;
-let statuses = ['Ботаю', 'Чилю', 'Сплю', 'Играю', 'Отошел', 'qwe','sdd2', 'dsdsd', '1dsds','dsds', 'sad', 'sdd'];
+export let statuses;
 
 
-function add(input) {
+async function add(input) {
     if (input.value !== '') {
         statuses = [input.value, ...statuses];
         input.value = '';
+        let token = localStorage.getItem('private_token');
+        const resp = await fetch(url + 'edit/user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"private_token": token,
+  "new_name": name,
+  "new_surname": surname,
+  "new_profession": job,
+  "new_status": current_status,
+  "new_saved_statuses": statuses, "new_tasks": tasks})
+    });
+    const json = await resp.json();
     }
 }
 function next_slide() {
@@ -354,14 +370,14 @@ ul p {
     <div class="status_row_1" in:fly="{{ x: 100*direction, duration: 100 }}">
         {#each statuses as status, i}
             {#if i>slide*5-1 && i<slide*5+3}
-            <button class="button_status {current_status === status ? 'current_button':''}" on:click={() => current_status = status}>{status}</button>
+            <button class="button_status {current_status === status['title'] ? 'current_button':''}" on:click={() => current_status = status['title']}>{status['title']}</button>
                 {/if}
             {/each}
     </div>
     <div class="status_row_2" in:fly="{{ x: (100*direction), duration: 100 }}">
         {#each statuses as status, i}
             {#if i>slide*5+2 && i<slide*5+5}
-            <button class="button_status {current_status === status ? 'current_button':''}" on:click={() => current_status = status}>{status}</button>
+            <button class="button_status {current_status === status['title'] ? 'current_button':''}" on:click={() => current_status = status['title']}>{status['title']}</button>
                 {/if}
             {/each}
     </div>
@@ -369,14 +385,14 @@ ul p {
     <div class="status_row_1" in:fly="{{ x: -100*direction, duration: 100}}">
         {#each statuses as status, i}
             {#if i>slide*5-1 && i<slide*5+3}
-            <button class="button_status {current_status === status ? 'current_button':''}" on:click={() => current_status = status}>{status}</button>
+            <button class="button_status {current_status === status['title'] ? 'current_button':''}" on:click={() => current_status = status['title']}>{status['title']}</button>
                 {/if}
             {/each}
     </div>
     <div class="status_row_2" in:fly="{{ x: -100*direction, duration: 100 }}">
         {#each statuses as status, i}
             {#if i>slide*5+2 && i<slide*5+5}
-            <button class="button_status {current_status === status ? 'current_button':''}" on:click={() => current_status = status}>{status}</button>
+            <button class="button_status {current_status === status['title'] ? 'current_button':''}" on:click={() => current_status = status['title']}>{status['title']}</button>
                 {/if}
             {/each}
     </div>
