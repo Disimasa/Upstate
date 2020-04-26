@@ -2,7 +2,7 @@
     section {
         font-family: Comfortaa, sans-serif;
         width: 100vw;
-        height: 70vw;
+        height: 70vh;
         display: flex;
         flex-direction: column;
         justify-content: center;

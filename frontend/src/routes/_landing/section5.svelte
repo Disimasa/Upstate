@@ -2,7 +2,7 @@
     section {
         font-family: Comfortaa, sans-serif;
         width: 100vw;
-        height: 70vw;
+        height: 70vh;
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -34,7 +34,7 @@
         max-width: 320px;
     }
     .section-container {
-        width: 90vw;
+        width: 70vw;
         display: flex;
         flex-direction: row;
         align-items: center;

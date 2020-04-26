@@ -3,7 +3,7 @@
         width: 100vw;
         background-color: #f8f8f8;
         display: flex;
-        /*height: ;*/
+        height: 70vh;
         /*align-items: center;*/
         justify-content: center;
     }
@@ -16,7 +16,7 @@
     }
 
     .section-container {
-        width: 90vw;
+        width: 80vw;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;

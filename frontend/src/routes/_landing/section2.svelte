@@ -1,7 +1,7 @@
 <style>
     section {
         width: 100vw;
-        height: 70vh;
+        height: 46vh;
         background-color: #f8f8f8;
         display: flex;
         /*align-items: center;*/
