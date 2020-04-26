@@ -14,6 +14,7 @@ export let statuses;
 
 async function add(input) {
     if (input.value !== '') {
+        let token = localStorage.getItem('private_token');
         statuses = [input.value, ...statuses];
         input.value = '';
         const resp = await fetch(url + 'edit/user', {

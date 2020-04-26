@@ -2,34 +2,37 @@
   "bundler": "rollup",
   "shimport": "1.0.1",
   "assets": {
-    "main": "client.2b2c9322.js"
+    "main": "client.b5e0bcec.js"
   },
   "css": {
     "main": "main.2341431260.css",
     "chunks": {
       "index.svelte": [
-        "index.a8b6bf2d.css",
-        "client.2b2c9322.css"
+        "index.e11119ad.css",
+        "client.b5e0bcec.css"
       ],
       "magic_button.svelte": [
-        "magic_button.638898ee.css",
-        "client.2b2c9322.css"
+        "magic_button.c90dc942.css",
+        "client.b5e0bcec.css"
       ],
       "profile.svelte": [
-        "profile.2143433c.css",
-        "client.2b2c9322.css"
+        "profile.de09e8f9.css",
+        "client.b5e0bcec.css"
       ],
       "blog/index.svelte": [
-        "index.e77a37b3.css",
-        "client.2b2c9322.css"
+        "index.96d6ddc3.css",
+        "client.b5e0bcec.css"
       ],
       "blog/[slug].svelte": [
-        "[slug].9222e338.css",
-        "client.2b2c9322.css"
+        "[slug].9b8434ff.css",
+        "client.b5e0bcec.css"
+      ],
+      "team/[team_token].svelte": [
+        "client.b5e0bcec.css"
       ],
       "team.svelte": [
-        "team.309fda6b.css",
-        "client.2b2c9322.css"
+        "team.6402565a.css",
+        "client.b5e0bcec.css"
       ]
     }
   }

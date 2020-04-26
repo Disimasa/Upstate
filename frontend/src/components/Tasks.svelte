@@ -3,8 +3,22 @@ import { quintOut } from 'svelte/easing';
 import { crossfade } from 'svelte/transition';
 import { flip } from 'svelte/animate';
 import { fade } from 'svelte/transition';
-let uid = 1;
+import {url} from '../../static/site_url.js';
 export let tasks;
+let uid = tasks.length-1;
+async function fetch_data() {
+    alert('dsd');
+    let token = localStorage.getItem('private_token');
+     const resp = await fetch(url + 'edit/user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"private_token": token,
+        "new_tasks": tasks})
+    });
+    const json = await resp.json();
+}
 	const [send, receive] = crossfade({
 		duration: d => Math.sqrt(d * 200),
 
@@ -32,6 +46,7 @@ function add(input) {
 
         tasks = [...tasks, todo];
         input.value = '';
+        fetch_data();
     }
 }
 
@@ -43,6 +58,7 @@ function add(input) {
 		todo.completed = done;
 		remove(todo);
 		tasks = tasks.concat(todo);
+		fetch_data();
 	}
 </script>
 <style>
@@ -131,6 +147,9 @@ input::-webkit-input-placeholder { color: #6574FF;}
         display: grid;
         grid-template-columns: 1fr 1fr;
         font-size: 20px;
+    }
+    .status p {
+        margin-left: 10px;
     }
     .tasks p, .performed p {
         margin: 30px 0 40px 30px;
