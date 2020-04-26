@@ -47,8 +47,6 @@ if (public_token === null) {
     margin-top: 200px;
 }
 </style>
-<button class="create_team" on:click={Create_team}>Создать команду</button>
-<p>{team_token}</p>
 <Component1/>
 <Component2/>
 <Component3/>
