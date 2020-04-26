@@ -1,5 +1,11 @@
 <script>
+    import Component1 from './_landing/section1.svelte';
+    import Component2 from './_landing/section2.svelte';
+    import Component3 from './_landing/section3.svelte';
+    import Component4 from './_landing/section4.svelte';
+    import Component5 from './_landing/section5.svelte';
     import {url} from '../../static/site_url.js';
+    let team_token;
     let public_token;
     let private_token;
 async function Create_team() {
@@ -21,7 +27,7 @@ if (public_token === null) {
     localStorage.setItem('public_token', public_token);
     localStorage.setItem('private_token', private_token);
 } else {
-    private_token = localStorage.getItem('cookie_private');
+    private_token = localStorage.getItem('private_token');
 }
     const resp = await fetch(url + 'create/team', {
         method: 'POST',
@@ -31,6 +37,8 @@ if (public_token === null) {
         body: JSON.stringify({'creator_token':private_token})
     });
     const json = await resp.json();
+    team_token = json['public_token'];
+    localStorage.setItem('team_token', team_token);
     alert(json['name']);
 }
 </script>
@@ -40,3 +48,9 @@ if (public_token === null) {
 }
 </style>
 <button class="create_team" on:click={Create_team}>Создать команду</button>
+<p>{team_token}</p>
+<Component1/>
+<Component2/>
+<Component3/>
+<Component4/>
+<Component5/>

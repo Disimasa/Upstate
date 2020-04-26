@@ -60,14 +60,14 @@ async def user_view(public_token: str = Query(..., description='Public token of 
     }
 
 
-# TODO /show/team/private
-@app.get('/show/team', response_model=ShowPublicTeam)
-async def team_view(public_token: str = Query(..., description='Public token of team')):
+# TODO /show/teams/private
+@app.get('/show/teams', response_model=ShowPublicTeam)
+async def team_view(public_token: str = Query(..., description='Public token of teams')):
     team = await Team.get_or_none(public_token=public_token)
     if team is None:
         raise HTTPException(status_code=404, detail='Team not found')
     return {
-        'team': await Public_Team_pydantic.from_tortoise_orm(team),
+        'teams': await Public_Team_pydantic.from_tortoise_orm(team),
         'members': [
             {
                 'user': await Public_User_pydantic.from_tortoise_orm(user),
@@ -104,7 +104,7 @@ async def create_user(user_data: UserToCreate):
     }
 
 
-@app.post('/create/team', description='Creates team binded to User. Accepts only private token',
+@app.post('/create/teams', description='Creates teams binded to User. Accepts only private token',
           response_model=Team_pydantic)
 async def create_team(team_data: TeamToCreate):
     user_token = team_data.creator_token
@@ -162,7 +162,7 @@ async def edit_user(user_data: UserToEdit):
     }
 
 
-@app.post('/enter/team',
+@app.post('/enter/teams',
           description='Universal method for adding Users. Pass private User token and public Team token '
                       'to join as member, or private User token and private Team token to join as manager',
           response_model=ShowPublicTeam)
@@ -178,10 +178,10 @@ async def join_team(data: UserToJoin = Body(...)):
         user = await User.get_or_none(private_token=data.user_token)
         team = await Team.get_or_none(public_token=data.team_token)
         if user is None or team is None:
-            raise HTTPException(status_code=404, detail='User or team not found')
+            raise HTTPException(status_code=404, detail='User or teams not found')
         await team.members.add(user)
     return {
-        'team': await Public_Team_pydantic.from_tortoise_orm(team),
+        'teams': await Public_Team_pydantic.from_tortoise_orm(team),
         'members': [await Public_User_pydantic.from_tortoise_orm(user) for user in await team.members.all()]
     }
 
@@ -191,7 +191,7 @@ async def admin_view():
     return {
         'Users': [await User_pydantic.from_tortoise_orm(user) for user in await User.all()],
         'Teams': [{
-            'team': await Team_pydantic.from_tortoise_orm(team),
+            'teams': await Team_pydantic.from_tortoise_orm(team),
             'members': [await User_pydantic.from_tortoise_orm(member) for member in await team.members.all()],
             'managers': [await Manager_pydantic.from_tortoise_orm(manager) for manager in await team.managers.all()]
         } for team in await Team.all()]

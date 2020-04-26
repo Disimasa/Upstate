@@ -23,7 +23,7 @@ if (public_token === null) {
 } else {
     private_token = get_cookie('cookie_private');
 }
-    const resp = await fetch(url + 'create/team', {
+    const resp = await fetch(url + 'create/teams', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

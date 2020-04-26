@@ -60,7 +60,7 @@
             <div class="image"><img src="landing/computer.png"></div>
             <div class="text">
                 <h2 class="question">Вспомните момент, когда вы ждали ответа на протяжени минут, а может и часов</h2>
-                <h2 class="fix">Пора скзать этому Нет</h2>
+                <h2 class="fix">Пора сказать этому Нет</h2>
             </div>
         </div>
     </div>

@@ -3,24 +3,25 @@ import { fade, slide } from 'svelte/transition';
 import { onMount } from 'svelte';
 import {url} from '../../static/site_url.js';
 let team;
+let bool_arr;
 onMount(fetch_data);
 async function fetch_data() {
         let token = localStorage.getItem('team_token');
-        alert(token);
         const resp = await fetch(url + 'show/team?' + new URLSearchParams({'public_token': token}));
         const json = await resp.json();
         team = json['team']['name'];
+        bool_arr= [];
         for (let i = 0; i < json['members'].length; i++) {
-        json['members'][i]['bool'] = '0';
+        bool_arr[i] = {i: 0};
         }
         return json;
     }
     let json = fetch_data();
 function drop(num) {
-    if (json['members'][num]['bool'] === '0') {
-        json['members'][num]['bool'] = '1';
+    if (bool_arr[num] === '0') {
+        bool_arr[num] = '1';
     } else {
-        json['members'][num]['bool'] = '0';
+        bool_arr[num] = '0';
     }
 }
 </script>
@@ -257,19 +258,23 @@ function drop(num) {
         {#each json['members'] as member, num}
         <div class="member_box">
         <div class="member">
-            <div class="info"><p>{member['name']} {member['surname']}</p></div>
-            <div class="status"><p>Статус: </p><div class="current_status">{member['status']}</div></div>
-            <div class="job"><div class="job_text"><p>{member['profession']}</p></div></div>
-            <div class="task"><p>Выполняемая задача</p><div class="current_task">{member[5]}</div></div>
+            <div class="info"><p>{member['user']['name']} {member['user']['surname']}</p></div>
+            <div class="status"><p>Статус: </p><div class="current_status">{member['user']['status']}</div></div>
+            <div class="job"><div class="job_text"><p>{member['user']['profession']}</p></div></div>
+            {#if member['tasks'].length>0}
+            <div class="task"><p>Выполняемая задача</p><div class="current_task">{member['tasks'][0]['description']}</div></div>
+                {:else}
+            <div class="task"><p>Выполняемая задача</p><div class="current_task">задач нет</div></div>
+                {/if}
         </div>
-            {#if member['bool'] === '1'}
+            {#if bool_arr[num] === '1' && member['tasks'].length>1}
             <div class="all_tasks" transition:slide|local>
                 {#each member as task, ind}
-                    {#if ind>5}
-                    <div class="tasks">{task}</div>
+                    {#if ind>0}
+                    <div class="tasks">{task['description']}</div>
                     {/if}
                 {/each}
-                {#if member.length<7}
+                {#if member.length===ind}
                 <div class="tasks">Больше нет задач</div>
                     {/if}
             </div>

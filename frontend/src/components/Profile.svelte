@@ -232,7 +232,7 @@ input::-webkit-input-placeholder { color: #6574FF; }
     }
     .current_status {
         justify-content: center;
-        margin: 0;
+        margin: 0 0 0 20px;
         font-size: 6vw;
     }
     .all_line {
@@ -240,7 +240,7 @@ input::-webkit-input-placeholder { color: #6574FF; }
     }
     .status {
         font-size: 10vw;
-        margin: 0 0 0 30px;
+        margin: 0 0 0 20px;
     }
     .new_status {
         grid-area: new_status;

@@ -13,12 +13,12 @@ class Platforms(Enum):
 
 
 class TeamToCreate(BaseModel):
-    creator_token: str = Field(..., description='Private token of user, who creates the team',
+    creator_token: str = Field(..., description='Private token of user, who creates the teams',
                                example='fh14kl1km!6b', max_length=256)
 
 
 class UserToJoin(BaseModel):
-    team_token: str = Field(..., description='The public token of team',
+    team_token: str = Field(..., description='The public token of teams',
                             example='fh14kl1km!6b', max_length=256)
     user_token: str = Field(..., description='The private token of user',
                             example='fh14kl1km!6b', max_length=256)

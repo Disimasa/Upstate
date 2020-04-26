@@ -1,3 +1,6 @@
+<script>
+
+</script>
 <section>
     <div class="image"><img alt="leaves" src="landing/leaves.png"></div>
     <div class="container">
