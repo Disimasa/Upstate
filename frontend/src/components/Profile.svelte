@@ -16,21 +16,29 @@ async function add(input) {
     if (input.value !== '') {
         statuses = [input.value, ...statuses];
         input.value = '';
-        let token = localStorage.getItem('private_token');
         const resp = await fetch(url + 'edit/user', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({"private_token": token,
-  "new_name": name,
-  "new_surname": surname,
-  "new_profession": job,
-  "new_status": current_status,
-  "new_saved_statuses": statuses, "new_tasks": tasks})
+        "new_saved_statuses": statuses})
     });
     const json = await resp.json();
     }
+}
+async function set_current_status(status) {
+    let token = localStorage.getItem('private_token');
+    current_status = status;
+    const resp = await fetch(url + 'edit/user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"private_token": token,
+        "new_status": status})
+    });
+    const json = await resp.json();
 }
 function next_slide() {
     if (statuses.length > 5) {
@@ -370,14 +378,14 @@ ul p {
     <div class="status_row_1" in:fly="{{ x: 100*direction, duration: 100 }}">
         {#each statuses as status, i}
             {#if i>slide*5-1 && i<slide*5+3}
-            <button class="button_status {current_status === status['title'] ? 'current_button':''}" on:click={() => current_status = status['title']}>{status['title']}</button>
+            <button class="button_status {current_status === status ? 'current_button':''}" on:click={() => set_current_status(status)}>{status}</button>
                 {/if}
             {/each}
     </div>
     <div class="status_row_2" in:fly="{{ x: (100*direction), duration: 100 }}">
         {#each statuses as status, i}
             {#if i>slide*5+2 && i<slide*5+5}
-            <button class="button_status {current_status === status['title'] ? 'current_button':''}" on:click={() => current_status = status['title']}>{status['title']}</button>
+            <button class="button_status {current_status === status ? 'current_button':''}" on:click={() => set_current_status(status)}>{status}</button>
                 {/if}
             {/each}
     </div>
@@ -385,14 +393,14 @@ ul p {
     <div class="status_row_1" in:fly="{{ x: -100*direction, duration: 100}}">
         {#each statuses as status, i}
             {#if i>slide*5-1 && i<slide*5+3}
-            <button class="button_status {current_status === status['title'] ? 'current_button':''}" on:click={() => current_status = status['title']}>{status['title']}</button>
+            <button class="button_status {current_status === status ? 'current_button':''}" on:click={() => set_current_status(status)}>{status}</button>
                 {/if}
             {/each}
     </div>
     <div class="status_row_2" in:fly="{{ x: -100*direction, duration: 100 }}">
         {#each statuses as status, i}
             {#if i>slide*5+2 && i<slide*5+5}
-            <button class="button_status {current_status === status['title'] ? 'current_button':''}" on:click={() => current_status = status['title']}>{status['title']}</button>
+            <button class="button_status {current_status === status ? 'current_button':''}" on:click={() => set_current_status(status)}>{status}</button>
                 {/if}
             {/each}
     </div>
