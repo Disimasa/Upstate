@@ -5,7 +5,7 @@ from models import User, Team, Status, Manager, Task
 from api_models import UserToCreate, TeamToCreate, User_pydantic, \
     Team_pydantic, UserToJoin, UserToEdit, Public_User_pydantic, \
     Public_Team_pydantic, Manager_pydantic, ShowPublicTeam, ShowPrivateUser, \
-    Status_pydantic, Task_pydantic, ShowPublicUser
+    Status_pydantic, Task_pydantic, ShowPublicUser, PrivateToken
 
 from tortoise import Tortoise
 import tools
@@ -77,7 +77,7 @@ async def team_view(public_token: str = Query(..., description='Public token of 
 
 
 @app.post('/show/user/private', description='Shows private User view', response_model=ShowPrivateUser)
-async def user_view(private_token: str = Body(..., description='Private token of User')):
+async def user_view(private_token: PrivateToken):
     user = await User.get_or_none(private_token=private_token)
     if user is None:
         raise HTTPException(status_code=404, detail='User not found')
