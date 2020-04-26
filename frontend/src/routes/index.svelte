@@ -15,7 +15,7 @@ if (public_token === null) {
         'platform_name':'web', 'name':'', 'surname':''})
     });
     const json = await resp.json();
-    alert(json['user']['name'])
+    alert(json['user']['name']);
     public_token = json['user']['public_token'];
     private_token = json['user']['private_token'];
     document.cookie = "public_token=" + escape(public_token) + "; expires=22/22/2022 00:00:00";

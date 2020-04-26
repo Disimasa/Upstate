@@ -41,7 +41,7 @@ async def startup():
     await Tortoise.generate_schemas(safe=True)
     await fill_db.statuses()
     global data_for_persons_generator
-    data_for_persons_generator = pd.read_csv('persons.csv').fillna('')
+    data_for_persons_generator = pd.read_csv('persons2.csv').fillna('')
 
 
 @app.on_event('shutdown')
@@ -56,7 +56,7 @@ async def user_view(public_token: str = Query(..., description='Public token of 
         raise HTTPException(status_code=404, detail='User not found')
     return {
         'user': await Public_User_pydantic.from_tortoise_orm(user),
-        'tasks': [await Task_pydantic.from_tortoise_orm(task) for task in user.tasks.all()]
+        'tasks': [await Task_pydantic.from_tortoise_orm(task) for task in await user.tasks.all()]
     }
 
 

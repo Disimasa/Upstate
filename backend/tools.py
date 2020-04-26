@@ -4,11 +4,12 @@ import pandas as pd
 from hashlib import sha256
 from typing import List
 import datetime
+from time import time
 
 
 def generate_tokens_onetime(data: List[str]):
     data = ':'.join(data)
-    data += datetime.datetime.now().strftime('%d%B%Y')
+    data += str(time())
     private, public = bytes(data + 'gWekqpoie12', encoding='utf8'), bytes(data, encoding='utf8')
     return 'private:'+sha256(private).hexdigest(), 'public:'+sha256(public).hexdigest()
 
