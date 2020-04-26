@@ -16,7 +16,8 @@ def generate_tokens_onetime(data: List[str]):
 def generate_user(user_data: UserToCreate, gen_data: pd.DataFrame):
     random_person = gen_data.sample(1)
     random_person = random_person.iloc[0]
-    if user_data.name == '' and user_data.surname == '':
+    if user_data.name == '' and user_data.surname == '' or \
+            user_data.name is None and user_data.surname is None:
         name = random_person['name']
         surname = random_person['surname']
         profession = random_person['profession']
@@ -26,10 +27,10 @@ def generate_user(user_data: UserToCreate, gen_data: pd.DataFrame):
         profession = ''
     private_token, public_token = generate_tokens_onetime([profession, name, surname])
     return {'name': name, 'surname': surname, 'profession': profession,
+            f'{user_data.platform_name.value}_id': user_data.platform_id,
             'private_token': private_token, 'public_token': public_token}
 
 
 def generate_team(manger):
     private_token, public_token = generate_tokens_onetime([manger.name, manger.surname])
-    return {'manager_id': manger.pk, 'public_token': public_token,
-            'private_token': private_token, 'name': 'Какая-то команда'}
+    return {'public_token': public_token, 'private_token': private_token, 'name': 'Какая-то команда'}
