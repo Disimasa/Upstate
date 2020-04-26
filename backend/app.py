@@ -3,15 +3,14 @@ from fastapi import FastAPI, Body, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from models import User, Team, Status, Manager, Task
 from api_models import UserToCreate, TeamToCreate, User_pydantic, \
-     Team_pydantic, UserToJoin, UserToEdit, Public_User_pydantic,\
-     Public_Team_pydantic, Manager_pydantic, ShowPublicTeam, ShowPrivateUser,\
-     Status_pydantic, Task_pydantic
+    Team_pydantic, UserToJoin, UserToEdit, Public_User_pydantic, \
+    Public_Team_pydantic, Manager_pydantic, ShowPublicTeam, ShowPrivateUser, \
+    Status_pydantic, Task_pydantic, ShowPublicUser
 
 from tortoise import Tortoise
 import tools
 import fill_db
 import pandas as pd
-
 
 app = FastAPI(
     title='Upstate API',
@@ -42,7 +41,7 @@ async def startup():
     await Tortoise.generate_schemas(safe=True)
     await fill_db.statuses()
     global data_for_persons_generator
-    data_for_persons_generator = pd.read_csv('persons.csv').fillna('')
+    data_for_persons_generator = pd.read_csv('persons2.csv').fillna('')
 
 
 @app.on_event('shutdown')
@@ -50,12 +49,15 @@ async def shutdown():
     await Tortoise.close_connections()
 
 
-@app.get('/show/user', description='Shows User view', response_model=Public_User_pydantic)
+@app.get('/show/user', description='Shows User view', response_model=ShowPublicUser)
 async def user_view(public_token: str = Query(..., description='Public token of User')):
     user = await User.get_or_none(public_token=public_token)
     if user is None:
         raise HTTPException(status_code=404, detail='User not found')
-    return await Public_User_pydantic.from_tortoise_orm(user)
+    return {
+        'user': await Public_User_pydantic.from_tortoise_orm(user),
+        'tasks': [await Task_pydantic.from_tortoise_orm(task) for task in await user.tasks.all()]
+    }
 
 
 # TODO /show/team/private
@@ -66,7 +68,11 @@ async def team_view(public_token: str = Query(..., description='Public token of 
         raise HTTPException(status_code=404, detail='Team not found')
     return {
         'team': await Public_Team_pydantic.from_tortoise_orm(team),
-        'members': [await Public_User_pydantic.from_tortoise_orm(user) for user in await team.members.all()]
+        'members': [
+            {
+                'user': await Public_User_pydantic.from_tortoise_orm(user),
+                'tasks': [await Task_pydantic.from_tortoise_orm(task) for task in await user.tasks.all()]
+            } for user in await team.members.all()]
     }
 
 
