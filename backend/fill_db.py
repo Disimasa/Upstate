@@ -2,7 +2,7 @@ import logging
 from models import Status, User, Team
 
 
-INITIAL_STATUSES = ['Чилю', 'Ботаю', 'Играю']
+INITIAL_STATUSES = ['Чилю', 'Ботаю', 'Играю', 'Отошел', 'Сплю']
 
 
 async def statuses():

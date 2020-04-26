@@ -83,8 +83,7 @@ async def user_view(private_token: PrivateToken):
         raise HTTPException(status_code=404, detail='User not found')
     return {
         'user': await User_pydantic.from_tortoise_orm(user),
-        'saved_statuses': [await Status_pydantic.from_tortoise_orm(status)
-                           for status in await user.saved_statuses.all()],
+        'saved_statuses': [status.title for status in await user.saved_statuses.all()],
         'tasks': [await Task_pydantic.from_tortoise_orm(task)
                   for task in await user.tasks.all()]
     }
@@ -99,8 +98,7 @@ async def create_user(user_data: UserToCreate):
 
     return {
         'user': await User_pydantic.from_tortoise_orm(user),
-        'saved_statuses': [await Status_pydantic.from_tortoise_orm(status)
-                           for status in await user.saved_statuses.all()],
+        'saved_statuses': [status.title for status in await user.saved_statuses.all()],
         'tasks': [await Task_pydantic.from_tortoise_orm(task)
                   for task in await user.tasks.all()]
     }
@@ -148,20 +146,19 @@ async def edit_user(user_data: UserToEdit):
                 new_status = await Status.create(title=status_title)
             await user.saved_statuses.add(new_status)
 
+    print(user_data.new_tasks)
     if user_data.new_tasks is not None:
         tasks = await user.tasks.all()
         if len(tasks) > 0:
             await user.tasks.remove(*tasks)
-
         for task in user_data.new_tasks:
-            new_task = await Task.create(description=task.description, completed=task.completed, user_id=user.pk)
-
+            new_task = await Task.create(description=task.description, completed=task.completed)
+            await user.tasks.add(new_task)
+    await user.save()
     return {
         'user': await User_pydantic.from_tortoise_orm(user),
-        'saved_statuses': [await Status_pydantic.from_tortoise_orm(status)
-                           for status in await user.saved_statuses.all()],
-        'tasks': [await Task_pydantic.from_tortoise_orm(task)
-                  for task in await user.tasks.all()]
+        'saved_statuses': [status.title for status in await user.saved_statuses.all()],
+        'tasks': [await Task_pydantic.from_tortoise_orm(task) for task in await user.tasks.all()]
     }
 
 
