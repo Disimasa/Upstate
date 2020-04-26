@@ -57,14 +57,14 @@ Public_Team_pydantic = pydantic_model_creator(Team, name='TeamPublic',
 Task_pydantic = pydantic_model_creator(Task, name='Task')
 
 
-class ShowPublicTeam(BaseModel):
-    members: List[Public_User_pydantic]
-    team: Public_Team_pydantic
-
-
 class ShowPublicUser(BaseModel):
     user: Public_User_pydantic
     tasks: List[Task_pydantic]
+
+
+class ShowPublicTeam(BaseModel):
+    members: List[ShowPublicUser]
+    team: Public_Team_pydantic
 
 
 class ShowPrivateUser(BaseModel):
