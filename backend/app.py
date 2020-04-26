@@ -1,11 +1,11 @@
 import uvicorn
 from fastapi import FastAPI, Body, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from models import User, Team, Status, Manager
+from models import User, Team, Status, Manager, Task
 from api_models import UserToCreate, TeamToCreate, User_pydantic, \
      Team_pydantic, UserToJoin, UserToEdit, Public_User_pydantic,\
      Public_Team_pydantic, Manager_pydantic, ShowPublicTeam, ShowPrivateUser,\
-     Status_pydantic
+     Status_pydantic, Task_pydantic
 
 from tortoise import Tortoise
 import tools
@@ -78,7 +78,9 @@ async def user_view(private_token: str = Body(..., description='Private token of
     return {
         'user': await User_pydantic.from_tortoise_orm(user),
         'saved_statuses': [await Status_pydantic.from_tortoise_orm(status)
-                           for status in await user.saved_statuses.all()]
+                           for status in await user.saved_statuses.all()],
+        'tasks': [await Task_pydantic.from_tortoise_orm(task)
+                  for task in await user.tasks.all()]
     }
 
 
@@ -92,7 +94,9 @@ async def create_user(user_data: UserToCreate):
     return {
         'user': await User_pydantic.from_tortoise_orm(user),
         'saved_statuses': [await Status_pydantic.from_tortoise_orm(status)
-                           for status in await user.saved_statuses.all()]
+                           for status in await user.saved_statuses.all()],
+        'tasks': [await Task_pydantic.from_tortoise_orm(task)
+                  for task in await user.tasks.all()]
     }
 
 
@@ -132,17 +136,26 @@ async def edit_user(user_data: UserToEdit):
         if len(statuses) > 0:
             await user.saved_statuses.remove(*statuses)
 
-        print(user_data.new_saved_statuses)
         for status_title in user_data.new_saved_statuses:
             new_status = await Status.get_or_none(title=status_title)
             if new_status is None:
                 new_status = await Status.create(title=status_title)
             await user.saved_statuses.add(new_status)
 
+    if user_data.new_tasks is not None:
+        tasks = await user.tasks.all()
+        if len(tasks) > 0:
+            await user.tasks.remove(*tasks)
+
+        for task in user_data.new_tasks:
+            new_task = await Task.create(description=task.description, completed=task.completed, user_id=user.pk)
+
     return {
         'user': await User_pydantic.from_tortoise_orm(user),
         'saved_statuses': [await Status_pydantic.from_tortoise_orm(status)
-                           for status in await user.saved_statuses.all()]
+                           for status in await user.saved_statuses.all()],
+        'tasks': [await Task_pydantic.from_tortoise_orm(task)
+                  for task in await user.tasks.all()]
     }
 
 

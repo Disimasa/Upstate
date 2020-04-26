@@ -26,9 +26,15 @@ def generate_user(user_data: UserToCreate, gen_data: pd.DataFrame):
         surname = user_data.surname
         profession = ''
     private_token, public_token = generate_tokens_onetime([profession, name, surname])
-    return {'name': name, 'surname': surname, 'profession': profession,
-            f'{user_data.platform_name.value}_id': user_data.platform_id,
-            'private_token': private_token, 'public_token': public_token}
+    if type(user_data) != User:
+        return {'name': name, 'surname': surname, 'profession': profession,
+                f'{user_data.platform_name.value}_id': user_data.platform_id,
+                'private_token': private_token, 'public_token': public_token}
+    else:
+        return {'name': name, 'surname': surname, 'profession': profession,
+                f'vk_id': user_data.vk_id, 'alice_id': user_data.alice_id,
+                'telegram_id': user_data.telegram_id, 'web_id': user_data.web_id,
+                'private_token': private_token, 'public_token': public_token}
 
 
 def generate_team(manger):
